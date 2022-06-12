@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script>
+        //fuction for setting cookies
+        function setCookie(cname, cvalue, exdays) {
+            const d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            let expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        //fuction for getting cookies
+        function getCookie(cname) {
+            let name = cname + "=";
+            //handle special characters
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            //read each substring
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                //search for matching cookie
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        //fuction for checking cookies
+        function checkCookie() {
+            let user = getCookie("username");
+            if (user != "") {
+                alert("Welcome again " + user);
+            } else {
+                user = prompt("Please enter your name:", "");
+                if (user != "" && user != null) {
+                    setCookie("username", user, 30);
+                }
+            }
+        }
+
+        function checkStage() {
+            let stage = getCookie("stage");
+            if (stage != "") {
+                alert("Your current stage is " + stage);
+            } else {
+                stage = 1;
+                if (stage != "" && stage != null) {
+                    setCookie("stage", stage, 30);
+                }
+            }
+        }
+
+        function checkRange() {
+            let range = getCookie("range");
+            if (range != "") {
+                alert("Guess a number from 0 to " + range);
+            } else {
+                range = 2;
+                if (range != "" && range != null) {
+                    setCookie("range", range, 30);
+                }
+            }
+        }
+
+        function generateNumber(range) {
+            return Math.floor(Math.random() * range) + 1;
+        }
+
+        const cookiegame = () => {
+
+
+
+            let range = parseInt(getCookie("range"));
+            let stage = parseInt(getCookie("stage"));
+
+            genNum = generateNumber(range);
+            console.log(genNum);
+            answer = prompt("Please enter your guess:", "");
+
+
+            if (answer == genNum) {
+
+
+                let tryagain = prompt("Correct guess, proceed to next stage? Y/N");
+                if (tryagain.toLowerCase() == "y") {
+                    setCookie("stage", stage + 1, 30);
+                    setCookie("range", range + 1, 30);
+                    cookiegame();
+                } else {
+                    process.exit();
+                }
+
+            } else {
+                let tryagain = prompt("Wrong Guess, try again? Y/N");
+                if (tryagain.toLowerCase() == "y") {
+                    cookiegame();
+                } else {
+                    process.exit();
+                }
+            }
+
+
+        }
+    </script>
+</head>
+
+<body onload="checkCookie(), checkStage(), checkRange(), cookiegame()"></body>
+
+</html>
